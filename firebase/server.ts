@@ -1,5 +1,9 @@
-import { initializeApp, cert } from 'firebase-admin/app'
+import { initializeApp, cert, getApps } from 'firebase-admin/app'
+import { getFirestore } from 'firebase-admin/firestore'
 
-initializeApp({
-  credential: cert(process.env.FIREBASE_ADMIN_KEY as string)
-})
+if (!getApps()?.length) {
+  initializeApp({
+    credential: cert(JSON.parse(process.env.FIREBASE_ADMIN_KEY as string))
+  })
+}
+export const adiminDB = getFirestore()
