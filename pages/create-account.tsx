@@ -15,12 +15,14 @@ const CreateAccount = () => {
   }
 
   return (
-    <>
-      <h1>新規登録</h1>
+    <div className="container">
+      <h1 className="mb-4 text-xl">新規登録</h1>
 
-      <form onSubmit={handleSubmit(submit)}>
+      <form onSubmit={handleSubmit(submit)} className="space-y-6">
         <div>
-          <label htmlFor="name">名前</label>
+          <label className="block mb-1" htmlFor="name">
+            名前
+          </label>
           <input
             {...register('name', {
               required: '必須入力',
@@ -32,11 +34,14 @@ const CreateAccount = () => {
             type="text"
             name="name"
             id="name"
+            className="rounded border border-slate-400"
           />
         </div>
 
         <div>
-          <label htmlFor="nickname">ニックネーム</label>
+          <label className="block mb-1" htmlFor="nickname">
+            ニックネーム
+          </label>
           <input
             {...register('nickname', {
               required: '必須入力',
@@ -48,11 +53,14 @@ const CreateAccount = () => {
             type="text"
             name="nickname"
             id="nickname"
+            className="rounded border border-slate-400"
           />
         </div>
 
         <div>
-          <label htmlFor="profile">プロフィール</label>
+          <label className="block mb-1" htmlFor="profile">
+            プロフィール
+          </label>
           <textarea
             {...register('profile', {
               required: '必須入力',
@@ -65,12 +73,13 @@ const CreateAccount = () => {
             id="profile"
             cols={30}
             rows={10}
+            className="rounded border border-slate-400"
           ></textarea>
         </div>
 
         <Button>アカウント作成</Button>
       </form>
-    </>
+    </div>
   )
 }
 
