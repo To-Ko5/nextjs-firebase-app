@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { useForm } from 'react-hook-form'
 import Button from '../components/common/button'
 
@@ -25,7 +26,7 @@ const CreateAccount = () => {
       <form onSubmit={handleSubmit(submit)} className="space-y-6">
         <div>
           <label className="block mb-1" htmlFor="name">
-            名前
+            名前＊
           </label>
           <input
             {...register('name', {
@@ -38,7 +39,10 @@ const CreateAccount = () => {
             type="text"
             name="name"
             id="name"
-            className="rounded border border-slate-400"
+            className={classNames(
+              'rounded border',
+              errors.name ? 'border-red-500' : 'border-slate-400'
+            )}
           />
           {errors.name && (
             <p className="text-red-500 mt-1">{errors.name?.message}</p>
@@ -47,7 +51,7 @@ const CreateAccount = () => {
 
         <div>
           <label className="block mb-1" htmlFor="nickname">
-            ニックネーム
+            ニックネーム＊
           </label>
           <input
             {...register('nickname', {
@@ -60,7 +64,10 @@ const CreateAccount = () => {
             type="text"
             name="nickname"
             id="nickname"
-            className="rounded border border-slate-400"
+            className={classNames(
+              'rounded border',
+              errors.name ? 'border-red-500' : 'border-slate-400'
+            )}
           />
           {errors.nickname && (
             <p className="text-red-500 mt-1">{errors.nickname?.message}</p>
@@ -69,7 +76,7 @@ const CreateAccount = () => {
 
         <div>
           <label className="block mb-1" htmlFor="profile">
-            プロフィール
+            プロフィール＊
           </label>
           <textarea
             {...register('profile', {
@@ -83,7 +90,10 @@ const CreateAccount = () => {
             id="profile"
             cols={30}
             rows={10}
-            className="rounded border border-slate-400"
+            className={classNames(
+              'rounded border',
+              errors.name ? 'border-red-500' : 'border-slate-400'
+            )}
           ></textarea>
           {errors.profile && (
             <p className="text-red-500 mt-1">{errors.profile?.message}</p>
