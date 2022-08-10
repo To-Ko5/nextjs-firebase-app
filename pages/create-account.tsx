@@ -39,6 +39,7 @@ const CreateAccount = () => {
             type="text"
             name="name"
             id="name"
+            autoComplete="name"
             className={classNames(
               'rounded border',
               errors.name ? 'border-red-500' : 'border-slate-400'
@@ -64,6 +65,7 @@ const CreateAccount = () => {
             type="text"
             name="nickname"
             id="nickname"
+            autoComplete="off"
             className={classNames(
               'rounded border',
               errors.name ? 'border-red-500' : 'border-slate-400'
