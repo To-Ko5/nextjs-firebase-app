@@ -8,7 +8,11 @@ type User = {
 }
 
 const CreateAccount = () => {
-  const { register, handleSubmit } = useForm<User>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<User>()
 
   const submit = (data: User) => {
     console.log(data)
@@ -36,6 +40,9 @@ const CreateAccount = () => {
             id="name"
             className="rounded border border-slate-400"
           />
+          {errors.name && (
+            <p className="text-red-500 mt-1">{errors.name?.message}</p>
+          )}
         </div>
 
         <div>
@@ -55,6 +62,9 @@ const CreateAccount = () => {
             id="nickname"
             className="rounded border border-slate-400"
           />
+          {errors.nickname && (
+            <p className="text-red-500 mt-1">{errors.nickname?.message}</p>
+          )}
         </div>
 
         <div>
@@ -75,6 +85,9 @@ const CreateAccount = () => {
             rows={10}
             className="rounded border border-slate-400"
           ></textarea>
+          {errors.profile && (
+            <p className="text-red-500 mt-1">{errors.profile?.message}</p>
+          )}
         </div>
 
         <Button>アカウント作成</Button>
