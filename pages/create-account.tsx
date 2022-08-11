@@ -1,12 +1,7 @@
 import classNames from 'classnames'
 import { useForm } from 'react-hook-form'
 import Button from '../components/common/button'
-
-type User = {
-  name: string
-  nickname: string
-  profile: string
-}
+import { User } from '../types/user'
 
 const CreateAccount = () => {
   const {
