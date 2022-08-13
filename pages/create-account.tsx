@@ -8,7 +8,7 @@ import { db } from '../firebase/client'
 import { User } from '../types/user'
 
 const CreateAccount = () => {
-  const { firebaseUser, isLoading } = useAuth()
+  const { firebaseUser, isLoading, user } = useAuth()
   const router = useRouter()
   const {
     register,
@@ -35,6 +35,10 @@ const CreateAccount = () => {
   if (!firebaseUser && !isLoading) {
     router.push('/login')
     return null
+  }
+
+  if (user && !isLoading) {
+    router.push('/')
   }
 
   return (
