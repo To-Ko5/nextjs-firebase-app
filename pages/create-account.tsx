@@ -1,9 +1,13 @@
 import classNames from 'classnames'
+import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import Button from '../components/common/button'
+import { useAuth } from '../context/auth'
 import { User } from '../types/user'
 
 const CreateAccount = () => {
+  const { isLoggedIn, isLoading } = useAuth()
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -13,6 +17,15 @@ const CreateAccount = () => {
 
   const submit = (data: User) => {
     console.log(data)
+  }
+
+  if (isLoading) {
+    return true
+  }
+
+  if (!isLoggedIn && !isLoading) {
+    router.push('/login')
+    return null
   }
 
   return (
@@ -94,7 +107,7 @@ const CreateAccount = () => {
             )}
           ></textarea>
           <p className="text-sm text-slate-400 leading-none">
-            {watch('profile').length || 0} / 250
+            {watch('profile')?.length || 0} / 250
           </p>
           {errors.profile && (
             <p className="text-red-500 mt-1">{errors.profile?.message}</p>
