@@ -1,12 +1,14 @@
 import classNames from 'classnames'
+import { doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import Button from '../components/common/button'
 import { useAuth } from '../context/auth'
+import { db } from '../firebase/client'
 import { User } from '../types/user'
 
 const CreateAccount = () => {
-  const { isLoggedIn, isLoading } = useAuth()
+  const { firebaseUser, isLoading } = useAuth()
   const router = useRouter()
   const {
     register,
@@ -16,14 +18,21 @@ const CreateAccount = () => {
   } = useForm<User>()
 
   const submit = (data: User) => {
-    console.log(data)
+    if (!firebaseUser) {
+      return
+    }
+    const ref = doc(db, `users/${firebaseUser.uid}`)
+    setDoc(ref, data).then(() => {
+      alert('作成')
+      router.push('/')
+    })
   }
 
   if (isLoading) {
-    return true
+    return null
   }
 
-  if (!isLoggedIn && !isLoading) {
+  if (!firebaseUser && !isLoading) {
     router.push('/login')
     return null
   }

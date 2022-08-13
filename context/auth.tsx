@@ -5,25 +5,25 @@ import {
   useEffect,
   useState
 } from 'react'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, User } from 'firebase/auth'
 import { auth } from '../firebase/client'
 
 type ContextType = {
-  isLoggedIn: boolean
+  firebaseUser: User | null | undefined
   isLoading: boolean
 }
 
 const AuthContext = createContext<ContextType>({
-  isLoggedIn: false,
+  firebaseUser: undefined,
   isLoading: true
 })
 
 export const AuthPovider = ({ children }: { children: ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [firebaseUser, setFirebaseUser] = useState<User | null>()
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      setIsLoggedIn(!!user)
+      setFirebaseUser(user)
       setIsLoading(false)
     })
   }, [])
@@ -31,7 +31,7 @@ export const AuthPovider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn,
+        firebaseUser,
         isLoading
       }}
     >
