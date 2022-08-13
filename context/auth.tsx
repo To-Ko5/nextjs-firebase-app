@@ -5,26 +5,51 @@ import {
   useEffect,
   useState
 } from 'react'
-import { onAuthStateChanged, User } from 'firebase/auth'
-import { auth } from '../firebase/client'
+import {
+  onAuthStateChanged,
+  Unsubscribe,
+  User as FirebaseUser
+} from 'firebase/auth'
+import { auth, db } from '../firebase/client'
+import { User } from '../types/user'
+import { doc, onSnapshot } from 'firebase/firestore'
 
 type ContextType = {
-  firebaseUser: User | null | undefined
+  firebaseUser: FirebaseUser | null | undefined
   isLoading: boolean
+  user: User | null | undefined
 }
 
 const AuthContext = createContext<ContextType>({
   firebaseUser: undefined,
-  isLoading: true
+  isLoading: true,
+  user: undefined
 })
 
 export const AuthPovider = ({ children }: { children: ReactNode }) => {
-  const [firebaseUser, setFirebaseUser] = useState<User | null>()
+  const [user, setUser] = useState<User | null>()
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>()
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      setFirebaseUser(user)
-      setIsLoading(false)
+    let unSubscribe: Unsubscribe
+
+    onAuthStateChanged(auth, (result) => {
+      unSubscribe?.()
+      setFirebaseUser(result)
+
+      // ユーザー情報を監視して取得
+      if (result) {
+        setIsLoading(true)
+        const ref = doc(db, `users/${result.uid}`)
+        unSubscribe = onSnapshot(ref, (snap) => {
+          console.log(snap.data())
+          setUser(snap.data() as User)
+          setIsLoading(false)
+        })
+      } else {
+        setUser(null)
+        setIsLoading(false)
+      }
     })
   }, [])
 
@@ -32,7 +57,8 @@ export const AuthPovider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         firebaseUser,
-        isLoading
+        isLoading,
+        user
       }}
     >
       {children}
