@@ -1,7 +1,9 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useAuth } from '../context/auth'
 
 const Home: NextPage = () => {
+  const { user } = useAuth()
   return (
     <div>
       <Head>
@@ -10,7 +12,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main></main>
+      <main className="container mt-6">
+        <p>{user?.name}</p>
+        <p>{user?.nickname}</p>
+        <p>{user?.profile}</p>
+      </main>
     </div>
   )
 }
