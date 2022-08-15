@@ -1,7 +1,11 @@
 import classNames from 'classnames'
+import { collection, doc, setDoc } from 'firebase/firestore'
+import Router, { useRouter } from 'next/router'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import Button from '../components/common/button'
+import { useAuth } from '../context/auth'
+import { db } from '../firebase/client'
 import { Post } from '../types/post'
 
 const CreatePost = () => {
@@ -11,9 +15,29 @@ const CreatePost = () => {
     handleSubmit,
     formState: { errors }
   } = useForm<Post>()
+  const router = useRouter()
+  const { firebaseUser, isLoading } = useAuth()
+
+  if (!firebaseUser) {
+    if (!isLoading) {
+      router.push('/login')
+    }
+    return null
+  }
 
   const submit = (data: Post) => {
-    console.log(data)
+    const ref = doc(collection(db, 'posts'))
+    const post: Post = {
+      id: ref.id,
+      title: data.title,
+      body: data.body,
+      createdAt: Date.now(),
+      updatedAt: null,
+      authorId: firebaseUser?.uid
+    }
+    setDoc(ref, post).then(() => {
+      alert('作成完了')
+    })
   }
   return (
     <>
@@ -48,7 +72,7 @@ const CreatePost = () => {
 
         <div className="mb-2">
           <label className="block mb-1" htmlFor="body">
-            プロフィール＊
+            本文＊
           </label>
           <textarea
             {...register('body', {
