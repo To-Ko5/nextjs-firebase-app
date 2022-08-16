@@ -1,8 +1,14 @@
 import React from 'react'
 import algoliasearch from 'algoliasearch/lite'
-import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-hooks-web'
+import { debounce } from 'debounce'
+import {
+  InstantSearch,
+  SearchBox,
+  Hits,
+  HitsProps,
+  SearchBoxProps
+} from 'react-instantsearch-hooks-web'
 import { Post } from '../types/post'
-import { HitsProps } from 'react-instantsearch-hooks-web/dist/es/ui/Hits'
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIS_KEY as string,
@@ -14,11 +20,14 @@ const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
 }
 
 const SearchPost = () => {
+  const search: SearchBoxProps['queryHook'] = (query, hook) => {
+    hook(query)
+  }
   return (
     <div>
       <h1>検索ページ</h1>
       <InstantSearch indexName="posts" searchClient={searchClient}>
-        <SearchBox />
+        <SearchBox queryHook={debounce(search, 500)} />
         <Hits<Post> hitComponent={Hit} />
       </InstantSearch>
     </div>
