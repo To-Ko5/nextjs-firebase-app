@@ -7,7 +7,9 @@ import {
   Hits,
   HitsProps,
   SearchBoxProps,
-  useInstantSearch
+  useInstantSearch,
+  Pagination,
+  Configure
 } from 'react-instantsearch-hooks-web'
 import { Post } from '../types/post'
 import { SearchIcon } from '@heroicons/react/solid'
@@ -57,8 +59,17 @@ const SearchPost = () => {
             </div>
           )}
         />
+        <Configure hitsPerPage={2} />
         <NoResultsBoundary>
           <Hits<Post> hitComponent={Hit} />
+          <Pagination
+            classNames={{
+              list: 'flex space-x-3',
+              link: 'py-2 px-3 block',
+              selectedItem: 'text-blue-400',
+              disabledItem: 'text-gray-500 opacity-40'
+            }}
+          />
         </NoResultsBoundary>
       </InstantSearch>
     </div>
