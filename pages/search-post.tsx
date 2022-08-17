@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import algoliasearch from 'algoliasearch/lite'
 import { debounce } from 'debounce'
 import {
@@ -13,6 +13,10 @@ import {
 } from 'react-instantsearch-hooks-web'
 import { Post } from '../types/post'
 import { SearchIcon } from '@heroicons/react/solid'
+import { format } from 'date-fns'
+import { db } from '../firebase/client'
+import { doc, getDoc } from 'firebase/firestore'
+import { User } from '../types/user'
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIS_KEY as string,
@@ -20,9 +24,21 @@ const searchClient = algoliasearch(
 )
 
 const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
+  const [user, setUser] = useState<User>()
+  useEffect(() => {
+    const ref = doc(db, `users/${hit.authorId}`)
+    getDoc(ref).then((result) => {
+      setUser(result.data() as User)
+    })
+  }, [hit])
+
   return (
     <div className="rounded-sm shadow p-4">
       <p>{hit.title}</p>
+      <p className="text-slate-500 text-sm">
+        {format(hit.createdAt, 'yyyy年MM月dd日')}
+      </p>
+      {user ? <p>{user.name}</p> : <p>...</p>}
     </div>
   )
 }
