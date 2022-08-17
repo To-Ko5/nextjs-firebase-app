@@ -10,6 +10,7 @@ import {
   useInstantSearch
 } from 'react-instantsearch-hooks-web'
 import { Post } from '../types/post'
+import { SearchIcon } from '@heroicons/react/solid'
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIS_KEY as string,
@@ -42,7 +43,20 @@ const SearchPost = () => {
     <div>
       <h1>検索ページ</h1>
       <InstantSearch indexName="posts" searchClient={searchClient}>
-        <SearchBox queryHook={debounce(search, 500)} />
+        <SearchBox
+          queryHook={debounce(search, 500)}
+          classNames={{
+            root: 'relative inline-block',
+            input: 'border-slate-400 pr-10',
+            submitIcon: 'hidden',
+            resetIcon: 'hidden'
+          }}
+          submitIconComponent={() => (
+            <div className="absolute top-1/2 right-0 -translate-y-1/2 p-2 w-10">
+              <SearchIcon className="text-slate-500" />
+            </div>
+          )}
+        />
         <NoResultsBoundary>
           <Hits<Post> hitComponent={Hit} />
         </NoResultsBoundary>
