@@ -20,7 +20,11 @@ const searchClient = algoliasearch(
 )
 
 const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
-  return <div>{hit.title}</div>
+  return (
+    <div className="rounded-sm shadow p-4">
+      <p>{hit.title}</p>
+    </div>
+  )
 }
 
 const NoResultsBoundary = ({ children }: { children: ReactNode }) => {
@@ -29,12 +33,23 @@ const NoResultsBoundary = ({ children }: { children: ReactNode }) => {
   if (!results.__isArtificial && results.nbHits === 0) {
     return (
       <>
-        <div>【{results.query}】検索結果はありませんでした</div>
+        <div className="text-sm text-slate-500 my-4">
+          【{results.query}】検索結果はありませんでした
+        </div>
       </>
     )
   }
 
-  return <>{children}</>
+  return (
+    <div>
+      {results.query && (
+        <p className="text-sm text-slate-500 my-4">
+          {results.query}の検索結果は{results.nbHits}件でした。
+        </p>
+      )}
+      {children}
+    </div>
+  )
 }
 
 const SearchPost = () => {
@@ -42,8 +57,8 @@ const SearchPost = () => {
     hook(query)
   }
   return (
-    <div>
-      <h1>検索ページ</h1>
+    <div className="container">
+      <h1 className="mb-4 text-xl">検索ページ</h1>
       <InstantSearch indexName="posts" searchClient={searchClient}>
         <SearchBox
           queryHook={debounce(search, 500)}
@@ -61,7 +76,10 @@ const SearchPost = () => {
         />
         <Configure hitsPerPage={2} />
         <NoResultsBoundary>
-          <Hits<Post> hitComponent={Hit} />
+          <Hits<Post>
+            hitComponent={Hit}
+            classNames={{ list: 'space-y-4 my-4' }}
+          />
           <Pagination
             classNames={{
               list: 'flex space-x-3',
