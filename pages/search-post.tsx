@@ -17,6 +17,7 @@ import { format } from 'date-fns'
 import { db } from '../firebase/client'
 import { doc, getDoc } from 'firebase/firestore'
 import { User } from '../types/user'
+import useSWR from 'swr/immutable'
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIS_KEY as string,
@@ -24,13 +25,14 @@ const searchClient = algoliasearch(
 )
 
 const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
-  const [user, setUser] = useState<User>()
-  useEffect(() => {
-    const ref = doc(db, `users/${hit.authorId}`)
-    getDoc(ref).then((result) => {
-      setUser(result.data() as User)
-    })
-  }, [hit])
+  const { data: user } = useSWR<User>(
+    hit.authorId && `users/${hit.authorId}`,
+    async () => {
+      const ref = doc(db, `users/${hit.authorId}`)
+      const response = await getDoc(ref)
+      return response.data() as User
+    }
+  )
 
   return (
     <div className="rounded-sm shadow p-4">
