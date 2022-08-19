@@ -36,11 +36,11 @@ const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
 
   return (
     <div className="rounded-sm shadow p-4">
-      <p>{hit.title}</p>
+      <p className="line-clamp-2">{hit.title}</p>
       <p className="text-slate-500 text-sm">
         {format(hit.createdAt, 'yyyy年MM月dd日')}
       </p>
-      {user ? <p>{user.name}</p> : <p>...</p>}
+      {user ? <p className="truncate">{user.name}</p> : <p>...</p>}
     </div>
   )
 }
@@ -92,7 +92,7 @@ const SearchPost = () => {
             </div>
           )}
         />
-        <Configure hitsPerPage={2} />
+        <Configure hitsPerPage={5} />
         <NoResultsBoundary>
           <Hits<Post>
             hitComponent={Hit}
