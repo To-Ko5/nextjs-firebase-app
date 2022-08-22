@@ -42,7 +42,6 @@ export const AuthPovider = ({ children }: { children: ReactNode }) => {
         setIsLoading(true)
         const ref = doc(db, `users/${result.uid}`)
         unSubscribe = onSnapshot(ref, (snap) => {
-          console.log(snap.data())
           setUser(snap.data() as User)
           setIsLoading(false)
         })
