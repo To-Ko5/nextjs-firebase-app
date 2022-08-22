@@ -18,6 +18,7 @@ import { db } from '../firebase/client'
 import { doc, getDoc } from 'firebase/firestore'
 import { User } from '../types/user'
 import useSWR from 'swr/immutable'
+import Link from 'next/link'
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIS_KEY as string,
@@ -36,7 +37,9 @@ const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
 
   return (
     <div className="rounded-sm shadow p-4">
-      <p className="line-clamp-2">{hit.title}</p>
+      <p className="line-clamp-2">
+        <Link href={`/post/${hit.id}`}>{hit.title}</Link>
+      </p>
       <p className="text-slate-500 text-sm">
         {format(hit.createdAt, 'yyyy年MM月dd日')}
       </p>
