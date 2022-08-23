@@ -19,6 +19,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { User } from '../types/user'
 import useSWR from 'swr/immutable'
 import Link from 'next/link'
+import { useUser } from '../hooks/user'
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIS_KEY as string,
@@ -26,19 +27,14 @@ const searchClient = algoliasearch(
 )
 
 const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
-  const { data: user } = useSWR<User>(
-    hit.authorId && `users/${hit.authorId}`,
-    async () => {
-      const ref = doc(db, `users/${hit.authorId}`)
-      const response = await getDoc(ref)
-      return response.data() as User
-    }
-  )
+  const user = useUser(hit.authorId)
 
   return (
     <div className="rounded-sm shadow p-4">
       <p className="line-clamp-2">
-        <Link href={`/post/${hit.id}`}>{hit.title}</Link>
+        <Link href={`/post/${hit.id}`}>
+          <a>{hit.title}</a>
+        </Link>
       </p>
       <p className="text-slate-500 text-sm">
         {format(hit.createdAt, 'yyyy年MM月dd日')}
