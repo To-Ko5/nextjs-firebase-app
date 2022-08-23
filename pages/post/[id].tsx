@@ -13,10 +13,12 @@ const PostDetail = () => {
   const user = useUser(post?.authorId)
 
   useEffect(() => {
-    const ref = doc(db, `posts/${postId}`)
-    getDoc(ref).then((snap) => {
-      setPost(snap.data() as Post)
-    })
+    if (postId) {
+      const ref = doc(db, `posts/${postId}`)
+      getDoc(ref).then((snap) => {
+        setPost(snap.data() as Post)
+      })
+    }
   }, [postId])
 
   if (!post) {
@@ -26,11 +28,14 @@ const PostDetail = () => {
   return (
     <>
       <div className="container">
-        <h1 className="font-bold text-lg">{post.title}</h1>
+        <div className="grid">
+          <h1 className="font-bold text-lg mb-4 row-start-2">{post.title}</h1>
+          <div className="bg-gray-300 mb-4 aspect-video row-start-1"></div>
+        </div>
 
-        <div className="flex">
-          <div className=""></div>
-          <div className="flex-1">
+        <div className="flex mb-4">
+          <div className="w-10 h-10 bg-gray-300 rounded-full mr-2"></div>
+          <div className="">
             {user && <p>{user.name}</p>}
             <p>{format(post.createdAt, 'yyyy年MM月dd日')}</p>
           </div>
