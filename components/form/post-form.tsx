@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import { auth } from '../../firebase/client'
 import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 import Router, { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
@@ -49,12 +50,21 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
       updatedAt: isEditMode ? Date.now() : null,
       authorId: firebaseUser?.uid
     }
-    setDoc(ref, post, { merge: true }).then(() => {
+    setDoc(ref, post, { merge: true }).then(async () => {
       const path = `/post/${post.id}`
-      fetch(`/api/revalidate?path=${path}`)
+      const token = await auth.currentUser?.getIdToken(true)
+      fetch(`/api/revalidate?path=${path}`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
         .then((res) => res.json())
         .then(() => {
           alert(`${isEditMode ? '編集' : '作成'}完了`)
+        })
+        .catch((e) => {
+          alert('ページの生成に失敗しました')
         })
     })
   }
