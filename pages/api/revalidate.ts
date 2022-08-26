@@ -13,7 +13,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   try {
     // this should be the actual path not a rewritten path
     // e.g. for "/blog/[slug]" this should be "/blog/post-1"
+    console.log(req.query.path)
     await res.revalidate(req.query.path as string)
+
     return res.json({ revalidated: true })
   } catch (err) {
     // If there was an error, Next.js will continue
@@ -21,3 +23,5 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     return res.status(500).send('Error revalidating')
   }
 }
+
+export default handler

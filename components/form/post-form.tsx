@@ -50,7 +50,12 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
       authorId: firebaseUser?.uid
     }
     setDoc(ref, post, { merge: true }).then(() => {
-      alert(`${isEditMode ? '編集' : '作成'}完了`)
+      const path = `/post/${post.id}`
+      fetch(`/api/revalidate?path=${path}`)
+        .then((res) => res.json())
+        .then(() => {
+          alert(`${isEditMode ? '編集' : '作成'}完了`)
+        })
     })
   }
   return (
