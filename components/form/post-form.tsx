@@ -1,7 +1,7 @@
 import classNames from 'classnames'
-import { collection, doc, setDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 import Router, { useRouter } from 'next/router'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import Button from '../../components/common/button'
 import { useAuth } from '../../context/auth'
@@ -13,11 +13,22 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
     register,
     watch,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm<Post>()
   const router = useRouter()
   const { firebaseUser, isLoading } = useAuth()
   const editModeId = router.query.id as string
+
+  useEffect(() => {
+    if (editModeId) {
+      const ref = doc(db, `posts/${editModeId}`)
+      getDoc(ref).then((snap) => {
+        const post = snap.data() as Post
+        reset(post)
+      })
+    }
+  }, [editModeId])
 
   if (!firebaseUser) {
     if (!isLoading) {
@@ -34,8 +45,8 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
       id: isEditMode ? editModeId : ref.id,
       title: data.title,
       body: data.body,
-      createdAt: Date.now(),
-      updatedAt: null,
+      createdAt: isEditMode ? data.createdAt : Date.now(),
+      updatedAt: isEditMode ? Date.now() : null,
       authorId: firebaseUser?.uid
     }
     setDoc(ref, post, { merge: true }).then(() => {
