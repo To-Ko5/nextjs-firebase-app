@@ -1,8 +1,10 @@
 import { format } from 'date-fns'
 import { doc, getDoc } from 'firebase/firestore'
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import { useAuth } from '../../context/auth'
 import { db } from '../../firebase/client'
 import { adiminDB } from '../../firebase/server'
 import { useUser } from '../../hooks/user'
@@ -12,7 +14,8 @@ const PostDetail = ({
   post
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const user = useUser(post?.authorId)
-
+  const { firebaseUser } = useAuth()
+  const isAuthor = firebaseUser?.uid === post?.authorId
   if (!post) {
     return <p>記事がありません。</p>
   }
@@ -34,6 +37,14 @@ const PostDetail = ({
         </div>
 
         <p className="">{post.body}</p>
+
+        {isAuthor && (
+          <div>
+            <Link href={`/post/${post.id}/edit`}>
+              <a className="text-slate-500">削除</a>
+            </Link>
+          </div>
+        )}
       </div>
     </>
   )
