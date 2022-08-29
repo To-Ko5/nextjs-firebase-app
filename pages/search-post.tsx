@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactElement, ReactNode } from 'react'
 import algoliasearch from 'algoliasearch/lite'
 import { debounce } from 'debounce'
 import {
@@ -14,12 +14,10 @@ import {
 import { Post } from '../types/post'
 import { SearchIcon } from '@heroicons/react/solid'
 import { format } from 'date-fns'
-import { db } from '../firebase/client'
-import { doc, getDoc } from 'firebase/firestore'
-import { User } from '../types/user'
-import useSWR from 'swr/immutable'
 import Link from 'next/link'
 import { useUser } from '../hooks/user'
+import { NextPageWithLayout } from './_app'
+import Layout from '../components/common/layout'
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIS_KEY as string,
@@ -69,7 +67,7 @@ const NoResultsBoundary = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const SearchPost = () => {
+const SearchPost: NextPageWithLayout = () => {
   const search: SearchBoxProps['queryHook'] = (query, hook) => {
     hook(query)
   }
@@ -109,6 +107,10 @@ const SearchPost = () => {
       </InstantSearch>
     </div>
   )
+}
+
+SearchPost.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>
 }
 
 export default SearchPost

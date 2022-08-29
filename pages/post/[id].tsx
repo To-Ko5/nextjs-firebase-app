@@ -1,18 +1,17 @@
 import { format } from 'date-fns'
-import { doc, getDoc } from 'firebase/firestore'
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement } from 'react'
+import Layout from '../../components/common/layout'
 import { useAuth } from '../../context/auth'
-import { db } from '../../firebase/client'
 import { adiminDB } from '../../firebase/server'
 import { useUser } from '../../hooks/user'
 import { Post } from '../../types/post'
+import { NextPageWithLayout } from '../_app'
 
-const PostDetail = ({
-  post
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const PostDetail: NextPageWithLayout<
+  InferGetStaticPropsType<typeof getStaticProps>
+> = ({ post }) => {
   const user = useUser(post?.authorId)
   const { firebaseUser } = useAuth()
   const isAuthor = firebaseUser?.uid === post?.authorId
@@ -70,6 +69,10 @@ export const getStaticProps: GetStaticProps<{ post: Post }> = async ({
   return {
     props: { post }
   }
+}
+
+PostDetail.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>
 }
 
 export default PostDetail
