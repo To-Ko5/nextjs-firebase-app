@@ -1,8 +1,8 @@
-import { login, logout } from '../lib/auth'
-import Button from '../components/common/button'
-import { NextPageWithLayout } from './_app'
 import { ReactElement } from 'react'
+import Button from '../components/common/button'
 import Layout from '../components/common/layout'
+import { login, logout } from '../lib/auth'
+import { NextPageWithLayout } from './_app'
 
 const LoginPage: NextPageWithLayout = () => {
   return (
