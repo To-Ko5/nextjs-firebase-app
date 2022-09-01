@@ -13,7 +13,7 @@ const Header = () => {
               <Image src="/logo.svg" width={160} height={32} alt="logo" />
             </a>
           </Link>
-          <div className="bg-gray-500 rounded-full w-8 h-8"></div>
+
           <UserMenu />
         </div>
       </div>
