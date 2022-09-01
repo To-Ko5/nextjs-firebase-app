@@ -1,6 +1,7 @@
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import { forwardRef, ReactNode } from 'react'
+import { logout } from '../../lib/auth'
 
 const UserMenu = () => {
   const items = [
@@ -58,6 +59,22 @@ const UserMenu = () => {
                 </Menu.Item>
               )
             })}
+            <div className="px-1 py-1 ">
+              <Menu.Item>
+                {({ active }) => {
+                  return (
+                    <button
+                      className={`${
+                        active ? 'bg-blue-400 text-white' : 'text-gray-900'
+                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                      onClick={logout}
+                    >
+                      ログアウト
+                    </button>
+                  )
+                }}
+              </Menu.Item>
+            </div>
           </div>
         </Menu.Items>
       </Transition>
