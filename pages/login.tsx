@@ -1,21 +1,17 @@
 import { ReactElement } from 'react'
 import Button from '../components/common/button'
 import Layout from '../components/common/layout'
-import { login, logout } from '../lib/auth'
+import { login } from '../lib/auth'
 import { NextPageWithLayout } from './_app'
 
 const LoginPage: NextPageWithLayout = () => {
   return (
-    <>
-      <h1>LOGIN</h1>
+    <div className="container">
+      <h1 className="mb-4 text-xl">LOGIN</h1>
       <Button type="button" onClick={login}>
         ログイン
       </Button>
-
-      <Button type="button" onClick={logout}>
-        ログアウト
-      </Button>
-    </>
+    </div>
   )
 }
 
