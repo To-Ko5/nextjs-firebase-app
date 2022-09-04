@@ -2,6 +2,12 @@ import { Dialog, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import { Fragment } from 'react'
 
+const menuLinks = [
+  { lable: 'menu', href: '/' },
+  { lable: '検索', href: '/search-post' },
+  { lable: '作成', href: '/create-post' }
+]
+
 const Sidebar = ({
   isOpen,
   closeModal
@@ -39,11 +45,15 @@ const Sidebar = ({
                 <Dialog.Panel className="w-80 fixed left-0 inset-y-0 bg-gray-50">
                   <ul>
                     <li>
-                      <Link href="">
-                        <a className="block px-2 py-4 border-b border-gray-500">
-                          メニュー
-                        </a>
-                      </Link>
+                      {menuLinks.map((menu, index) => {
+                        return (
+                          <Link href={menu.href} key={index}>
+                            <a className="block px-2 py-4 border-b border-gray-500">
+                              {menu.lable}
+                            </a>
+                          </Link>
+                        )
+                      })}
                     </li>
                   </ul>
                 </Dialog.Panel>

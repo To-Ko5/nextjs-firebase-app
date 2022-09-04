@@ -8,7 +8,7 @@ import Sidebar from './sidebar'
 
 const Header = () => {
   const { user, isLoading } = useAuth()
-  const [isSideber, setIsSidebarOpen] = useState<boolean>(true)
+  const [isSideber, setIsSidebarOpen] = useState<boolean>(false)
 
   const closeModal = () => {
     setIsSidebarOpen(false)
