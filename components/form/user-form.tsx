@@ -1,6 +1,9 @@
+import { PhotographIcon } from '@heroicons/react/solid'
 import classNames from 'classnames'
 import { doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/router'
+import { useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import Button from '../../components/common/button'
 import { useAuth } from '../../context/auth'
@@ -10,6 +13,15 @@ import { User } from '../../types/user'
 const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
   const { firebaseUser, isLoading, user } = useAuth()
   const router = useRouter()
+  const onDropAccepted = useCallback((acceptedFiles: File[]) => {
+    // Do something with the files
+    console.log(acceptedFiles)
+  }, [])
+  const { getRootProps, getInputProps, isDragAccept } = useDropzone({
+    onDropAccepted,
+    accept: { 'image/png': [], 'image/jpeg': [] }
+  })
+
   const {
     register,
     handleSubmit,
@@ -37,8 +49,8 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
     return null
   }
 
-  if (user && !isLoading) {
-    // router.push('/')
+  if (user && !isLoading && !isEditMode) {
+    router.push('/')
   }
 
   return (
@@ -49,10 +61,20 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
 
       <form onSubmit={handleSubmit(submit)} className="space-y-6">
         <div>
-          <label className="block mb-1" htmlFor="">
-            プロフィール画像
-          </label>
-          <input type="file" />
+          <p className="block mb-1">プロフィール画像</p>
+          <div
+            className={classNames(
+              'aspect-square border-2 rounded-md border-dashed border-gray-500 w-40 grid content-center hover: cursor-pointer hover:bg-gray-50',
+              isDragAccept && 'bg-blue-200'
+            )}
+            {...getRootProps()}
+          >
+            <div className="text-center ">
+              <PhotographIcon className="mx-auto w-10 h-10 text-gray-200" />
+              <p className="text-gray-200 text-sm">画像を選択</p>
+            </div>
+            <input type="hiden" {...getInputProps()} />
+          </div>
         </div>
 
         <div>

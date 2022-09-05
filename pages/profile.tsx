@@ -1,11 +1,12 @@
 import { ReactElement } from 'react'
 import Layout from '../components/common/layout'
+import UserForm from '../components/form/user-form'
 import { NextPageWithLayout } from './_app'
 
 const Profile: NextPageWithLayout = () => {
   return (
     <div className="container">
-      <h1 className="mb-4 text-xl">プロフィール</h1>
+      <UserForm isEditMode={true} />
     </div>
   )
 }
