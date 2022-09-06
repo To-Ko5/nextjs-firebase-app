@@ -1,11 +1,13 @@
 import { Dialog, Transition } from '@headlessui/react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { Fragment } from 'react'
 
 const menuLinks = [
   { lable: 'menu', href: '/' },
   { lable: '検索', href: '/search-post' },
-  { lable: '作成', href: '/create-post' }
+  { lable: '作成', href: '/create-post' },
+  { lable: 'お問い合わせ', href: '/contact' }
 ]
 
 const Sidebar = ({
@@ -43,12 +45,24 @@ const Sidebar = ({
                 leaveTo="opacity-0 -translate-x-full"
               >
                 <Dialog.Panel className="w-80 fixed left-0 inset-y-0 bg-gray-50">
+                  <div className="px-2 py-4">
+                    <Link href="/">
+                      <a className="flex">
+                        <Image
+                          src="/logo.svg"
+                          width={160}
+                          height={32}
+                          alt="logo"
+                        />
+                      </a>
+                    </Link>
+                  </div>
                   <ul>
                     <li>
                       {menuLinks.map((menu, index) => {
                         return (
                           <Link href={menu.href} key={index}>
-                            <a className="block px-2 py-4 border-b border-gray-500">
+                            <a className="block px-2 py-4 border-b border-blue-400 hover:text-blue-400">
                               {menu.lable}
                             </a>
                           </Link>
