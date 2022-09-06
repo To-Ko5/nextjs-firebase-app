@@ -1,12 +1,11 @@
 import classNames from 'classnames'
-import { auth } from '../../firebase/client'
 import { collection, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore'
-import Router, { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import Button from '../../components/common/button'
 import { useAuth } from '../../context/auth'
-import { db } from '../../firebase/client'
+import { auth, db } from '../../firebase/client'
 import { Post } from '../../types/post'
 
 const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
