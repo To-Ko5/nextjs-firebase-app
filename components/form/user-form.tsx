@@ -2,7 +2,7 @@ import { PhotographIcon } from '@heroicons/react/solid'
 import classNames from 'classnames'
 import { doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/router'
-import { useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 import AvatarEditor from 'react-avatar-editor'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
@@ -15,6 +15,7 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
   const { firebaseUser, isLoading, user } = useAuth()
   const router = useRouter()
   const [selectedImage, setSelectedImage] = useState<File>()
+  const [scale, setScale] = useState<number>(1)
   const onDropAccepted = useCallback((acceptedFiles: File[]) => {
     // Do something with the files
     setSelectedImage(acceptedFiles[0])
@@ -40,6 +41,10 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
       alert('作成')
       router.push('/')
     })
+  }
+
+  const changeRange = (e: ChangeEvent<HTMLInputElement>) => {
+    setScale(parseFloat(e.target.value))
   }
 
   if (isLoading) {
@@ -85,8 +90,16 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
                 height={250}
                 border={50}
                 color={[255, 255, 255, 0.6]} // RGBA
-                scale={1.2}
+                scale={scale}
                 rotate={0}
+              />
+              <input
+                type="range"
+                min={1}
+                max={3}
+                step={0.1}
+                defaultValue={scale}
+                onChange={changeRange}
               />
             </div>
           )}
