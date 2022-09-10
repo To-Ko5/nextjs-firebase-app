@@ -2,7 +2,8 @@ import { PhotographIcon } from '@heroicons/react/solid'
 import classNames from 'classnames'
 import { doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/router'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
+import AvatarEditor from 'react-avatar-editor'
 import { useDropzone } from 'react-dropzone'
 import { useForm } from 'react-hook-form'
 import Button from '../../components/common/button'
@@ -13,9 +14,10 @@ import { User } from '../../types/user'
 const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
   const { firebaseUser, isLoading, user } = useAuth()
   const router = useRouter()
+  const [selectedImage, setSelectedImage] = useState<File>()
   const onDropAccepted = useCallback((acceptedFiles: File[]) => {
     // Do something with the files
-    console.log(acceptedFiles)
+    setSelectedImage(acceptedFiles[0])
   }, [])
   const { getRootProps, getInputProps, isDragAccept } = useDropzone({
     onDropAccepted,
@@ -75,6 +77,19 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
             </div>
             <input type="hiden" {...getInputProps()} />
           </div>
+          {selectedImage && (
+            <div>
+              <AvatarEditor
+                image={selectedImage}
+                width={250}
+                height={250}
+                border={50}
+                color={[255, 255, 255, 0.6]} // RGBA
+                scale={1.2}
+                rotate={0}
+              />
+            </div>
+          )}
         </div>
 
         <div>
