@@ -10,13 +10,22 @@ import React, {
 } from 'react'
 import AvatarEditor from 'react-avatar-editor'
 import { useDropzone } from 'react-dropzone'
+import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
 
-const ImageSelecter = () => {
+const ImageSelecter = <T extends FieldValues>({
+  control,
+  name
+}: UseControllerProps<T>) => {
   const [selectedImage, setSelectedImage] = useState<File>()
   const [scale, setScale] = useState<number>(1)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [preview, setPreview] = useState<string | null>()
   const ref = useRef<AvatarEditor>(null)
+
+  const { field } = useController({
+    name,
+    control
+  })
 
   const onDropAccepted = useCallback((acceptedFiles: File[]) => {
     setSelectedImage(acceptedFiles[0])
@@ -44,7 +53,8 @@ const ImageSelecter = () => {
     const ctx = canvas.getContext('2d')
     ctx?.drawImage(image!, 0, 0, 100, 100)
 
-    setPreview(canvas.toDataURL('image/png'))
+    field.onChange(canvas.toDataURL('image/png'))
+
     closeModal()
   }
 
@@ -61,9 +71,10 @@ const ImageSelecter = () => {
         <div className="text-center ">
           <PhotographIcon className="mx-auto w-10 h-10 text-gray-200" />
           <p className="text-gray-200 text-sm">画像を選択</p>
-          {preview && (
+          {field.value && (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={preview}
+              src={field.value as string}
               className="absolute top-0 left-0 w-full h-full block"
               alt=""
             />
@@ -72,11 +83,11 @@ const ImageSelecter = () => {
         <input type="hiden" {...getInputProps()} />
       </div>
 
-      {preview && (
+      {field.value && (
         <div className="mt-3">
           <button
             className="px-4 py-2 rounded-full bg-gray-300"
-            onClick={() => setPreview(null)}
+            onClick={() => field.onChange('')}
           >
             画像を削除
           </button>

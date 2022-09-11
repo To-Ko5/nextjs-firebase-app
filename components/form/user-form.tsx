@@ -16,6 +16,7 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors }
   } = useForm<User>()
 
@@ -50,7 +51,7 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
       </h1>
 
       <form onSubmit={handleSubmit(submit)} className="space-y-6">
-        <ImageSelecter />
+        <ImageSelecter control={control} name="avatarURL" />
         <div>
           <label className="block mb-1" htmlFor="name">
             名前＊
