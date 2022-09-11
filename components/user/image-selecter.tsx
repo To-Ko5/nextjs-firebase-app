@@ -1,7 +1,13 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { PhotographIcon } from '@heroicons/react/solid'
 import classNames from 'classnames'
-import React, { ChangeEvent, Fragment, useCallback, useState } from 'react'
+import React, {
+  ChangeEvent,
+  Fragment,
+  useCallback,
+  useRef,
+  useState
+} from 'react'
 import AvatarEditor from 'react-avatar-editor'
 import { useDropzone } from 'react-dropzone'
 
@@ -9,6 +15,8 @@ const ImageSelecter = () => {
   const [selectedImage, setSelectedImage] = useState<File>()
   const [scale, setScale] = useState<number>(1)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [preview, setPreview] = useState<string | null>()
+  const ref = useRef<AvatarEditor>(null)
 
   const onDropAccepted = useCallback((acceptedFiles: File[]) => {
     setSelectedImage(acceptedFiles[0])
@@ -28,12 +36,24 @@ const ImageSelecter = () => {
     setIsModalOpen(false)
   }
 
+  const save = () => {
+    const image = ref.current?.getImage()
+    const canvas = document.createElement('canvas')
+    canvas.width = 100
+    canvas.height = 100
+    const ctx = canvas.getContext('2d')
+    ctx?.drawImage(image!, 0, 0, 100, 100)
+
+    setPreview(canvas.toDataURL('image/png'))
+    closeModal()
+  }
+
   return (
     <div>
       <p className="block mb-1">プロフィール画像</p>
       <div
         className={classNames(
-          'aspect-square border-2 rounded-md border-dashed border-gray-500 w-40 grid content-center hover: cursor-pointer hover:bg-gray-50',
+          'aspect-square border-2 rounded-full relative overflow-hidden border-dashed border-gray-500 w-40 grid content-center hover: cursor-pointer hover:bg-gray-50',
           isDragAccept && 'bg-blue-200'
         )}
         {...getRootProps()}
@@ -41,9 +61,27 @@ const ImageSelecter = () => {
         <div className="text-center ">
           <PhotographIcon className="mx-auto w-10 h-10 text-gray-200" />
           <p className="text-gray-200 text-sm">画像を選択</p>
+          {preview && (
+            <img
+              src={preview}
+              className="absolute top-0 left-0 w-full h-full block"
+              alt=""
+            />
+          )}
         </div>
         <input type="hiden" {...getInputProps()} />
       </div>
+
+      {preview && (
+        <div className="mt-3">
+          <button
+            className="px-4 py-2 rounded-full bg-gray-300"
+            onClick={() => setPreview(null)}
+          >
+            画像を削除
+          </button>
+        </div>
+      )}
 
       <Transition appear show={!!isModalOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -79,9 +117,10 @@ const ImageSelecter = () => {
                         height={250}
                         borderRadius={125}
                         border={50}
-                        color={[255, 255, 255, 0.6]} // RGBA
+                        color={[255, 255, 255, 0.6]}
                         scale={scale}
                         rotate={0}
+                        ref={ref}
                       />
                       <input
                         type="range"
@@ -100,7 +139,10 @@ const ImageSelecter = () => {
                     >
                       閉じる
                     </button>
-                    <button className="px-4 py-2 rounded-full bg-blue-400 text-gray-50">
+                    <button
+                      className="px-4 py-2 rounded-full bg-blue-400 text-gray-50"
+                      onClick={save}
+                    >
                       保存
                     </button>
                   </div>
