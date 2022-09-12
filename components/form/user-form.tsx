@@ -1,6 +1,11 @@
 import classNames from 'classnames'
 import { doc, setDoc } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadString } from 'firebase/storage'
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadString
+} from 'firebase/storage'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -39,6 +44,12 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
       await uploadString(image, data.avatarURL, 'data_url')
       const avatarURL = await getDownloadURL(image)
       data.avatarURL = avatarURL
+    }
+
+    // 画像が既にあり、現在のフォームに画像がない場合
+    if (user?.avatarURL && !data.avatarURL) {
+      const image = ref(storage, `users/${firebaseUser.uid}/avatar`)
+      await deleteObject(image)
     }
 
     const documentRef = doc(db, `users/${firebaseUser.uid}`)
