@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { doc, setDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadString } from 'firebase/storage'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import Button from '../../components/common/button'
 import { useAuth } from '../../context/auth'
@@ -18,8 +19,15 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
     handleSubmit,
     watch,
     control,
+    reset,
     formState: { errors }
   } = useForm<User>()
+
+  useEffect(() => {
+    if (isEditMode && user) {
+      reset(user)
+    }
+  }, [isEditMode, reset, user])
 
   const submit = async (data: User) => {
     if (!firebaseUser) {
@@ -35,8 +43,12 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
 
     const documentRef = doc(db, `users/${firebaseUser.uid}`)
     setDoc(documentRef, data).then(() => {
-      alert('作成')
-      router.push('/')
+      if (isEditMode) {
+        alert('編集しました')
+      } else {
+        alert('作成しました')
+        router.push('/')
+      }
     })
   }
 
