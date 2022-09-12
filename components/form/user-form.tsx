@@ -1,10 +1,11 @@
 import classNames from 'classnames'
 import { doc, setDoc } from 'firebase/firestore'
+import { getDownloadURL, ref, uploadString } from 'firebase/storage'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import Button from '../../components/common/button'
 import { useAuth } from '../../context/auth'
-import { db } from '../../firebase/client'
+import { db, storage } from '../../firebase/client'
 import { User } from '../../types/user'
 import ImageSelecter from '../user/image-selecter'
 
@@ -20,12 +21,20 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
     formState: { errors }
   } = useForm<User>()
 
-  const submit = (data: User) => {
+  const submit = async (data: User) => {
     if (!firebaseUser) {
       return
     }
-    const ref = doc(db, `users/${firebaseUser.uid}`)
-    setDoc(ref, data).then(() => {
+
+    if (data.avatarURL?.match(/^data:/)) {
+      const image = ref(storage, `users/${firebaseUser.uid}/avatar`)
+      await uploadString(image, data.avatarURL, 'data_url')
+      const avatarURL = await getDownloadURL(image)
+      data.avatarURL = avatarURL
+    }
+
+    const documentRef = doc(db, `users/${firebaseUser.uid}`)
+    setDoc(documentRef, data).then(() => {
       alert('作成')
       router.push('/')
     })
