@@ -1,3 +1,4 @@
+import { async } from '@firebase/util'
 import classNames from 'classnames'
 import { collection, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/router'
@@ -6,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import Button from '../../components/common/button'
 import { useAuth } from '../../context/auth'
 import { auth, db } from '../../firebase/client'
+import { postRevalidate } from '../../lib/post-revalidate'
 import { Post } from '../../types/post'
 
 const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
@@ -50,14 +52,10 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
       authorId: firebaseUser?.uid
     }
     setDoc(ref, post, { merge: true }).then(async () => {
+      await postRevalidate('/')
+
       const path = `/post/${post.id}`
-      const token = await auth.currentUser?.getIdToken(true)
-      fetch(`/api/revalidate?path=${path}`, {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
+      return postRevalidate(path)
         .then((res) => res.json())
         .then(() => {
           alert(`${isEditMode ? '編集' : '作成'}完了`)
@@ -68,9 +66,11 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
     })
   }
 
-  const deletePost = () => {
+  const deletePost = async () => {
     const ref = doc(db, `posts/${editModeId}`)
-    deleteDoc(ref).then(() => {
+    deleteDoc(ref).then(async () => {
+      await postRevalidate('/')
+      await postRevalidate(`/post/${editModeId}`)
       alert('記事を削除しました')
       router.push('/')
     })
