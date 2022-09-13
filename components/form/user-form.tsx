@@ -25,7 +25,7 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
     watch,
     control,
     reset,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm<User>()
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
     }
 
     const documentRef = doc(db, `users/${firebaseUser.uid}`)
-    setDoc(documentRef, data).then(() => {
+    return setDoc(documentRef, data).then(() => {
       if (isEditMode) {
         alert('編集しました')
       } else {
@@ -165,7 +165,9 @@ const UserForm = ({ isEditMode }: { isEditMode?: boolean }) => {
           )}
         </div>
 
-        <Button>{isEditMode ? '編集する' : 'アカウント作成'}</Button>
+        <Button disabled={isSubmitting}>
+          {isEditMode ? '編集する' : 'アカウント作成'}
+        </Button>
       </form>
     </div>
   )
