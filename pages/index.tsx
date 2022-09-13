@@ -2,6 +2,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import Head from 'next/head'
 import { ReactElement } from 'react'
 import Layout from '../components/common/layout'
+import PostItemCard from '../components/post/PostItemCard'
 import { useAuth } from '../context/auth'
 import { adiminDB } from '../firebase/server'
 import { Post } from '../types/post'
@@ -20,10 +21,11 @@ const Home: NextPageWithLayout<
       </Head>
 
       <main className="container mt-6">
+        <h2>記事の一覧</h2>
         {posts?.length ? (
-          <ul>
+          <ul className="space-y-4">
             {posts.map((post, index) => {
-              return <li key={index}>{post.title}</li>
+              return <PostItemCard key={index} post={post} />
             })}
           </ul>
         ) : (

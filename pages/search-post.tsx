@@ -1,60 +1,26 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { ReactElement, ReactNode } from 'react'
+import { SearchIcon } from '@heroicons/react/solid'
 import algoliasearch from 'algoliasearch/lite'
 import { debounce } from 'debounce'
+import { ReactElement, ReactNode } from 'react'
 import {
-  InstantSearch,
-  SearchBox,
+  Configure,
   Hits,
-  HitsProps,
-  SearchBoxProps,
-  useInstantSearch,
+  InstantSearch,
   Pagination,
-  Configure
+  SearchBox,
+  SearchBoxProps,
+  useInstantSearch
 } from 'react-instantsearch-hooks-web'
-import { Post } from '../types/post'
-import { SearchIcon } from '@heroicons/react/solid'
-import { format } from 'date-fns'
-import Link from 'next/link'
-import { useUser } from '../hooks/user'
-import { NextPageWithLayout } from './_app'
 import Layout from '../components/common/layout'
+import PostItemCard from '../components/post/PostItemCard'
+import { Post } from '../types/post'
+import { NextPageWithLayout } from './_app'
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIS_KEY as string,
   process.env.NEXT_PUBLIC_ALGOLIS_SEARCH_KEY as string
 )
-
-const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
-  const user = useUser(hit.authorId)
-
-  return (
-    <div className="rounded-sm shadow p-4">
-      <p className="line-clamp-2">
-        <Link href={`/post/${hit.id}`}>
-          <a>{hit.title}</a>
-        </Link>
-      </p>
-      <div className="flex items-center">
-        {user && (
-          <div className="w-8 h-8 rounded-full overflow-hidden mr-4">
-            <img
-              src={user.avatarURL}
-              alt={user.nickname}
-              className="w-full h-full"
-            />
-          </div>
-        )}
-        <div>
-          <p className="text-slate-500 text-sm">
-            {format(hit.createdAt, 'yyyy年MM月dd日')}
-          </p>
-          {user ? <p className="truncate">{user.name}</p> : <p>...</p>}
-        </div>
-      </div>
-    </div>
-  )
-}
 
 const NoResultsBoundary = ({ children }: { children: ReactNode }) => {
   const { results } = useInstantSearch()
@@ -106,7 +72,7 @@ const SearchPost: NextPageWithLayout = () => {
         <Configure hitsPerPage={5} />
         <NoResultsBoundary>
           <Hits<Post>
-            hitComponent={Hit}
+            hitComponent={({ hit }) => <PostItemCard post={hit} />}
             classNames={{ list: 'space-y-4 my-4' }}
           />
           <Pagination
