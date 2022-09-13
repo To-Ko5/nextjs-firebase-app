@@ -1,10 +1,15 @@
+import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import Head from 'next/head'
 import { ReactElement } from 'react'
 import Layout from '../components/common/layout'
 import { useAuth } from '../context/auth'
+import { adiminDB } from '../firebase/server'
+import { Post } from '../types/post'
 import { NextPageWithLayout } from './_app'
 
-const Home: NextPageWithLayout = () => {
+const Home: NextPageWithLayout<
+  InferGetStaticPropsType<typeof getStaticProps>
+> = ({ posts }) => {
   const { user } = useAuth()
   return (
     <div>
@@ -15,12 +20,34 @@ const Home: NextPageWithLayout = () => {
       </Head>
 
       <main className="container mt-6">
-        <p>{user?.name}</p>
-        <p>{user?.nickname}</p>
-        <p>{user?.profile}</p>
+        {posts?.length ? (
+          <ul>
+            {posts.map((post, index) => {
+              return <li key={index}>{post.title}</li>
+            })}
+          </ul>
+        ) : (
+          <p>記事がありません</p>
+        )}
       </main>
     </div>
   )
+}
+
+export const getStaticProps: GetStaticProps<{ posts: Post[] }> = async () => {
+  const response = await adiminDB
+    .collection('posts')
+    .orderBy('createdAt', 'desc')
+    .get()
+  const posts = response.docs.map((doc) => doc.data() as Post)
+  if (!posts) {
+    return {
+      notFound: true
+    }
+  }
+  return {
+    props: { posts }
+  }
 }
 
 Home.getLayout = function getLayout(page: ReactElement) {
