@@ -1,6 +1,7 @@
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import { forwardRef, ReactNode } from 'react'
+import { useAuth } from '../../context/auth'
 import { logout } from '../../lib/auth'
 
 const UserMenu = () => {
@@ -11,6 +12,12 @@ const UserMenu = () => {
       href: '/settings'
     }
   ]
+
+  const { user } = useAuth()
+
+  if (!user) {
+    return null
+  }
 
   const MyLink = forwardRef<
     HTMLAnchorElement,
@@ -31,7 +38,13 @@ const UserMenu = () => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="block bg-gray-500 rounded-full w-8 h-8"></Menu.Button>
+        <Menu.Button className="block bg-gray-500 rounded-full w-8 h-8 overflow-hidden">
+          <img
+            src={user.avatarURL}
+            alt={user.nickname}
+            className="w-full h-full object-cover "
+          />
+        </Menu.Button>
       </div>
       <Transition
         enter="transition ease-out duration-100"
