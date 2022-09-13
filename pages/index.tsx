@@ -11,7 +11,6 @@ import { NextPageWithLayout } from './_app'
 const Home: NextPageWithLayout<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ posts }) => {
-  const { user } = useAuth()
   return (
     <div>
       <Head>
@@ -40,6 +39,7 @@ export const getStaticProps: GetStaticProps<{ posts: Post[] }> = async () => {
   const response = await adiminDB
     .collection('posts')
     .orderBy('createdAt', 'desc')
+    .limit(20)
     .get()
   const posts = response.docs.map((doc) => doc.data() as Post)
   if (!posts) {
