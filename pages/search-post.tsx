@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { ReactElement, ReactNode } from 'react'
 import algoliasearch from 'algoliasearch/lite'
 import { debounce } from 'debounce'
@@ -34,10 +35,23 @@ const Hit: HitsProps<Post>['hitComponent'] = ({ hit }) => {
           <a>{hit.title}</a>
         </Link>
       </p>
-      <p className="text-slate-500 text-sm">
-        {format(hit.createdAt, 'yyyy年MM月dd日')}
-      </p>
-      {user ? <p className="truncate">{user.name}</p> : <p>...</p>}
+      <div className="flex items-center">
+        {user && (
+          <div className="w-8 h-8 rounded-full overflow-hidden mr-4">
+            <img
+              src={user.avatarURL}
+              alt={user.nickname}
+              className="w-full h-full"
+            />
+          </div>
+        )}
+        <div>
+          <p className="text-slate-500 text-sm">
+            {format(hit.createdAt, 'yyyy年MM月dd日')}
+          </p>
+          {user ? <p className="truncate">{user.name}</p> : <p>...</p>}
+        </div>
+      </div>
     </div>
   )
 }
