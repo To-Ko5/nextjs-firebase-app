@@ -77,11 +77,13 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
   }
   return (
     <>
-      <h1>{isEditMode ? '記事を編集' : '記事を投稿する'} </h1>
+      <h1 className="mb-4 text-xl">
+        {isEditMode ? '記事を編集' : '記事を投稿する'}{' '}
+      </h1>
 
       <form onSubmit={handleSubmit(submit)}>
-        <div>
-          <label className="block mb-1" htmlFor="name">
+        <div className="mb-4">
+          <label className="block mb-2" htmlFor="name">
             タイトル＊
           </label>
           <input
@@ -106,7 +108,7 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
           )}
         </div>
 
-        <div className="mb-2">
+        <div className="mb-4">
           <label className="block mb-1" htmlFor="body">
             本文＊
           </label>
@@ -137,9 +139,11 @@ const PostForm = ({ isEditMode }: { isEditMode?: boolean }) => {
 
         <Button>{isEditMode ? '編集する' : '投稿する'}</Button>
 
-        <button type="button" onClick={deletePost}>
-          削除する
-        </button>
+        {isEditMode && (
+          <button type="button" onClick={deletePost}>
+            削除する
+          </button>
+        )}
       </form>
     </>
   )
