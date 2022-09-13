@@ -36,6 +36,15 @@ const Header = () => {
               </a>
             </Link>
             <div className="flex-1"></div>
+            {user && (
+              <div>
+                <Link href="/create-post">
+                  <a className="mr-4 border border-black rounded-md p-2">
+                    投稿
+                  </a>
+                </Link>
+              </div>
+            )}
             {user ? (
               <UserMenu />
             ) : (
