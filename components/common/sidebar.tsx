@@ -1,7 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Fragment } from 'react'
+import { useRouter } from 'next/router'
+import { Fragment, useEffect } from 'react'
 
 const menuLinks = [
   { lable: 'menu', href: '/' },
@@ -17,6 +18,13 @@ const Sidebar = ({
   isOpen: boolean
   closeModal: () => void
 }) => {
+  const router = useRouter()
+  useEffect(() => {
+    router.events.on('routeChangeStart', closeModal)
+
+    return () => router.events.off('routeChangeStart', closeModal)
+  }, [])
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
