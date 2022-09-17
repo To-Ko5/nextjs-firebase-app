@@ -3,10 +3,13 @@ import Head from 'next/head'
 import { ReactElement } from 'react'
 import Layout from '../components/common/layout'
 import PostItemCard from '../components/post/PostItemCard'
-import { useAuth } from '../context/auth'
 import { adiminDB } from '../firebase/server'
 import { Post } from '../types/post'
-import { NextPageWithLayout } from './_app'
+import { NextPageWithLayout } from './_app' // Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react'
+
+// Import Swiper styles
+import 'swiper/css'
 
 const Home: NextPageWithLayout<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -20,7 +23,21 @@ const Home: NextPageWithLayout<
       </Head>
 
       <main className="container mt-6">
-        <h2>記事の一覧</h2>
+        <div className="mb-4">
+          <Swiper loop spaceBetween={50} slidesPerView={1}>
+            {new Array(5).fill(null).map((_, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <div className="bg-gray-100 aspect-video flex justify-center items-center">
+                    <p>{index}</p>
+                  </div>
+                </SwiperSlide>
+              )
+            })}
+          </Swiper>
+        </div>
+
+        <h2 className="mb-4">記事の一覧</h2>
         {posts?.length ? (
           <ul className="space-y-4">
             {posts.map((post, index) => {
