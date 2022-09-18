@@ -36,7 +36,7 @@ const UserMenu = () => {
   MyLink.displayName = 'MyLink'
 
   return (
-    <Menu as="div" className="relative inline-block text-left">
+    <Menu as="div" className="relative inline-block text-left z-20">
       <div>
         <Menu.Button className="block bg-gray-500 rounded-full w-8 h-8 overflow-hidden">
           <img
