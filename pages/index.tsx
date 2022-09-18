@@ -6,10 +6,10 @@ import PostItemCard from '../components/post/PostItemCard'
 import { adiminDB } from '../firebase/server'
 import { Post } from '../types/post'
 import { NextPageWithLayout } from './_app' // Import Swiper React components
+import { Navigation, Pagination, Scrollbar, A11y, Keyboard } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
-
-// Import Swiper styles
 import 'swiper/css'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
 
 const Home: NextPageWithLayout<
   InferGetStaticPropsType<typeof getStaticProps>
@@ -23,8 +23,24 @@ const Home: NextPageWithLayout<
       </Head>
 
       <main className="container mt-6">
-        <div className="mb-4">
-          <Swiper loop spaceBetween={50} slidesPerView={1}>
+        <div className="mb-4 relative">
+          <Swiper
+            loop
+            spaceBetween={50}
+            slidesPerView={1}
+            modules={[Navigation, Pagination, Scrollbar, A11y, Keyboard]}
+            navigation={{
+              nextEl: '#next',
+              prevEl: '#prev'
+            }}
+            keyboard
+            pagination={{
+              el: '#pagination',
+              bulletClass: 'w-3 h-3 rounded-full block bg-gray-200',
+              bulletActiveClass: 'bg-blue-400',
+              clickable: true
+            }}
+          >
             {new Array(5).fill(null).map((_, index) => {
               return (
                 <SwiperSlide key={index}>
@@ -35,6 +51,22 @@ const Home: NextPageWithLayout<
               )
             })}
           </Swiper>
+          <div
+            id="prev"
+            className="absolute top-1/2 -translate-y-1/2 right-0 z-10 p-2"
+          >
+            <ChevronRightIcon className="w-5 h-5" />
+          </div>
+          <div
+            id="next"
+            className="absolute top-1/2  -translate-y-1/2 z-10 p-2"
+          >
+            <ChevronLeftIcon className="w-5 h-5" />
+          </div>
+          <div
+            id="pagination"
+            className="flex space-x-2 justify-center mt-2"
+          ></div>
         </div>
 
         <h2 className="mb-4">記事の一覧</h2>
