@@ -1,4 +1,3 @@
-import { async } from '@firebase/util'
 import classNames from 'classnames'
 import { collection, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/router'
@@ -6,7 +5,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import Button from '../../components/common/button'
 import { useAuth } from '../../context/auth'
-import { auth, db } from '../../firebase/client'
+import { db } from '../../firebase/client'
 import { postRevalidate } from '../../lib/post-revalidate'
 import { Post } from '../../types/post'
 
