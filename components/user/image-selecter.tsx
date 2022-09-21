@@ -1,13 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { PhotographIcon } from '@heroicons/react/solid'
 import classNames from 'classnames'
-import React, {
-  ChangeEvent,
-  Fragment,
-  useCallback,
-  useRef,
-  useState
-} from 'react'
+import { ChangeEvent, Fragment, useCallback, useRef, useState } from 'react'
 import AvatarEditor from 'react-avatar-editor'
 import { useDropzone } from 'react-dropzone'
 import { FieldValues, useController, UseControllerProps } from 'react-hook-form'
@@ -19,7 +13,6 @@ const ImageSelecter = <T extends FieldValues>({
   const [selectedImage, setSelectedImage] = useState<File>()
   const [scale, setScale] = useState<number>(1)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-  const [preview, setPreview] = useState<string | null>()
   const ref = useRef<AvatarEditor>(null)
 
   const { field } = useController({
